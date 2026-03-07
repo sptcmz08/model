@@ -1,0 +1,274 @@
+@extends('admin.layouts.app')
+
+@section('title', 'แก้ไขสินค้า')
+@section('page-title', 'แก้ไขสินค้า')
+
+@section('content')
+    <div class="card" style="max-width: 900px;">
+        <div class="card-header">
+            <h3 class="card-title">แก้ไข: {{ $product->name }}</h3>
+            <a href="{{ route('admin.products.index') }}" class="btn btn-sm"
+                style="background: var(--primary-dark); color: var(--text-secondary);">
+                <i class="fas fa-arrow-left"></i> ย้อนกลับ
+            </a>
+        </div>
+
+        <form action="{{ route('admin.products.update', $product) }}" method="POST" enctype="multipart/form-data">
+            @csrf
+            @method('PUT')
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                <div class="form-group">
+                    <label for="name">ชื่อสินค้า *</label>
+                    <input type="text" id="name" name="name" class="form-control" value="{{ old('name', $product->name) }}"
+                        required>
+                    @error('name')
+                        <span style="color: #ef4444; font-size: 0.85rem;">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <div class="form-group">
+                    <label for="category_id">หมวดหมู่ *</label>
+                    <select id="category_id" name="category_id" class="form-control" required>
+                        <option value="">เลือกหมวดหมู่</option>
+                        @foreach($categories as $category)
+                            <option value="{{ $category->id }}" {{ old('category_id', $product->category_id) == $category->id ? 'selected' : '' }}>
+                                {{ $category->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('category_id')
+                        <span style="color: #ef4444; font-size: 0.85rem;">{{ $message }}</span>
+                    @enderror
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="description">รายละเอียดสินค้า</label>
+                <textarea id="description" name="description" class="form-control"
+                    rows="5">{{ old('description', $product->description) }}</textarea>
+                @error('description')
+                    <span style="color: #ef4444; font-size: 0.85rem;">{{ $message }}</span>
+                @enderror
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.5rem;">
+                <div class="form-group">
+                    <label for="price">ราคา (USD) *</label>
+                    <input type="number" id="price" name="price" class="form-control"
+                        value="{{ old('price', $product->price) }}" step="0.01" min="0" required>
+                    @error('price')
+                        <span style="color: #ef4444; font-size: 0.85rem;">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <div class="form-group">
+                    <label for="shipping_cost">ค่าจัดส่ง (USD) *</label>
+                    <input type="number" id="shipping_cost" name="shipping_cost" class="form-control"
+                        value="{{ old('shipping_cost', $product->shipping_cost) }}" step="0.01" min="0" required>
+                    @error('shipping_cost')
+                        <span style="color: #ef4444; font-size: 0.85rem;">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <div class="form-group">
+                    <label for="stock">จำนวนสินค้าคงเหลือ *</label>
+                    <input type="number" id="stock" name="stock" class="form-control"
+                        value="{{ old('stock', $product->stock) }}" min="0" required>
+                    @error('stock')
+                        <span style="color: #ef4444; font-size: 0.85rem;">{{ $message }}</span>
+                    @enderror
+                </div>
+            </div>
+
+            <!-- Variants Section -->
+            <hr style="border-color: var(--border-color); margin: 2rem 0;">
+            <div class="form-group">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <label style="margin-bottom: 0;">ตัวเลือกสินค้า / สี (Variants)</label>
+                    <button type="button" class="btn btn-sm btn-outline" onclick="addVariant()">
+                        <i class="fas fa-plus"></i> เพิ่มตัวเลือก
+                    </button>
+                </div>
+
+                <div id="variants-container">
+                    @foreach($product->variants as $index => $variant)
+                        <div class="variant-item" id="variant-{{ $index }}"
+                            style="background: var(--secondary-dark); padding: 1rem; border-radius: 8px; margin-bottom: 1rem; border: 1px solid var(--border-color);">
+                            <input type="hidden" name="variants[{{ $index }}][id]" value="{{ $variant->id }}">
+                            <div style="display: grid; grid-template-columns: 2fr 1fr 1fr auto; gap: 1rem; align-items: end;">
+                                <div class="form-group" style="margin-bottom: 0;">
+                                    <label style="font-size: 0.85rem;">ชื่อสี / แบบ *</label>
+                                    <input type="text" name="variants[{{ $index }}][name]" class="form-control"
+                                        value="{{ $variant->name }}" required>
+                                </div>
+                                <div class="form-group" style="margin-bottom: 0;">
+                                    <label style="font-size: 0.85rem;">Color Code (Hex)</label>
+                                    <input type="color" name="variants[{{ $index }}][color_code]" class="form-control"
+                                        style="height: 42px; padding: 4px;" value="{{ $variant->color_code ?? '#ef0000' }}">
+                                </div>
+                                <div class="form-group" style="margin-bottom: 0;">
+                                    <label style="font-size: 0.85rem;">จำนวน *</label>
+                                    <input type="number" name="variants[{{ $index }}][stock]" class="form-control"
+                                        value="{{ $variant->stock }}" min="0" required>
+                                </div>
+                                <button type="button" class="btn btn-sm" style="background: #ef4444; color: white;"
+                                    onclick="removeVariant({{ $index }})">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+            <hr style="border-color: var(--border-color); margin: 2rem 0;">
+
+            @if($product->images && count($product->images) > 0)
+                <div class="form-group">
+                    <label>รูปภาพปัจจุบัน</label>
+                    <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                        @foreach($product->images as $image)
+                            <div class="image-preview-item" style="position: relative; transition: all 0.3s;">
+                                <img src="{{ \Illuminate\Support\Facades\Storage::disk('public')->url($image) }}"
+                                    alt="{{ $product->name }}"
+                                    style="width: 100px; height: 100px; object-fit: cover; border-radius: 8px; border: 2px solid transparent;">
+                                <label style="position: absolute; top: -8px; right: -8px; cursor: pointer;"
+                                    onclick="toggleImageDelete(this)">
+                                    <input type="checkbox" name="remove_images[]" value="{{ $image }}" style="display: none;">
+                                    <span class="delete-icon"
+                                        style="display: block; width: 24px; height: 24px; background: #ef4444; border-radius: 50%; color: white; text-align: center; line-height: 24px; font-size: 12px; transition: all 0.2s;">
+                                        <i class="fas fa-times"></i>
+                                    </span>
+                                </label>
+                                <div class="delete-overlay"
+                                    style="display: none; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(239, 68, 68, 0.7); border-radius: 8px; align-items: center; justify-content: center; color: white; pointer-events: none;">
+                                    <i class="fas fa-trash"></i>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                    <small style="color: var(--text-muted);">คลิกที่กากบาทเพื่อลบรูปภาพ (กด "อัปเดตสินค้า" เพื่อยืนยัน)</small>
+                </div>
+
+                <script>
+                    function toggleImageDelete(label) {
+                        const checkbox = label.querySelector('input[type="checkbox"]');
+                        const container = label.closest('.image-preview-item');
+                        const overlay = container.querySelector('.delete-overlay');
+                        const icon = label.querySelector('.delete-icon');
+
+                        // Toggle checkbox state manually since we might be effectively intercepting it
+                        // Wait, the label click triggers the checkbox automatically. 
+                        // However, let's delay checking the state slightly to allow the change event to propagate?
+                        // Better to just listen to the change event.
+
+                        setTimeout(() => {
+                            if (checkbox.checked) {
+                                overlay.style.display = 'flex';
+                                icon.style.background = '#333';
+                                icon.style.transform = 'rotate(180deg)';
+                            } else {
+                                overlay.style.display = 'none';
+                                icon.style.background = '#ef4444';
+                                icon.style.transform = 'rotate(0deg)';
+                            }
+                        }, 50);
+                    }
+                </script>
+            @endif
+
+            <div class="form-group">
+                <label for="images">เพิ่มรูปภาพ</label>
+                <input type="file" id="images" name="images[]" class="form-control" accept="image/*" multiple
+                    onchange="previewNewImages(this)">
+                <small style="color: var(--text-muted);">สามารถเลือกได้หลายรูป</small>
+                @error('images.*')
+                    <span style="color: #ef4444; font-size: 0.85rem;">{{ $message }}</span>
+                @enderror
+
+                <!-- New Image Preview Container -->
+                <div id="new-images-preview" style="display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1rem;"></div>
+            </div>
+
+            <script>
+                function previewNewImages(input) {
+                    const previewContainer = document.getElementById('new-images-preview');
+                    previewContainer.innerHTML = '';
+
+                    if (input.files && input.files.length > 0) {
+                        Array.from(input.files).forEach((file, index) => {
+                            const reader = new FileReader();
+                            reader.onload = function (e) {
+                                const imgWrapper = document.createElement('div');
+                                imgWrapper.style.cssText = 'position: relative; border: 2px solid var(--gold-primary); border-radius: 8px; overflow: hidden;';
+
+                                const img = document.createElement('img');
+                                img.src = e.target.result;
+                                img.style.cssText = 'width: 100px; height: 100px; object-fit: cover; display: block;';
+
+                                const label = document.createElement('div');
+                                label.style.cssText = 'position: absolute; bottom: 0; left: 0; right: 0; background: rgba(212, 175, 55, 0.9); color: #000; font-size: 10px; text-align: center; padding: 2px;';
+                                label.textContent = 'NEW';
+
+                                imgWrapper.appendChild(img);
+                                imgWrapper.appendChild(label);
+                                previewContainer.appendChild(imgWrapper);
+                            };
+                            reader.readAsDataURL(file);
+                        });
+                    }
+                }
+            </script>
+
+            <div style="display: flex; gap: 2rem; margin-bottom: 1.5rem;">
+                <div class="form-check">
+                    <input type="checkbox" id="is_active" name="is_active" value="1" {{ old('is_active', $product->is_active) ? 'checked' : '' }}>
+                    <label for="is_active">เปิดใช้งาน (Active)</label>
+                </div>
+                <div class="form-check">
+                    <input type="checkbox" id="is_featured" name="is_featured" value="1" {{ old('is_featured', $product->is_featured) ? 'checked' : '' }}>
+                    <label for="is_featured">แสดงป้าย SALE (Featured)</label>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save"></i> อัปเดตสินค้า
+            </button>
+        </form>
+    </div>
+
+    <script>
+        let variantIndex = {{ $product->variants ? $product->variants->count() : 0 }};
+
+        function addVariant() {
+            const container = document.getElementById('variants-container');
+            const html = `
+                                <div class="variant-item" id="variant-${variantIndex}" style="background: var(--secondary-dark); padding: 1rem; border-radius: 8px; margin-bottom: 1rem; border: 1px solid var(--border-color);">
+                                    <div style="display: grid; grid-template-columns: 2fr 1fr 1fr auto; gap: 1rem; align-items: end;">
+                                        <div class="form-group" style="margin-bottom: 0;">
+                                            <label style="font-size: 0.85rem;">ชื่อสี / แบบ *</label>
+                                            <input type="text" name="variants[${variantIndex}][name]" class="form-control" placeholder="เช่น แดง, ไอรอนแมน Mark 85" required>
+                                        </div>
+                                        <div class="form-group" style="margin-bottom: 0;">
+                                            <label style="font-size: 0.85rem;">Color Code (Hex)</label>
+                                            <input type="color" name="variants[${variantIndex}][color_code]" class="form-control" style="height: 42px; padding: 4px;" value="#ef0000">
+                                        </div>
+                                        <div class="form-group" style="margin-bottom: 0;">
+                                            <label style="font-size: 0.85rem;">จำนวน *</label>
+                                            <input type="number" name="variants[${variantIndex}][stock]" class="form-control" value="0" min="0" required>
+                                        </div>
+                                        <button type="button" class="btn btn-sm" style="background: #ef4444; color: white;" onclick="removeVariant(${variantIndex})">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            `;
+            container.insertAdjacentHTML('beforeend', html);
+            variantIndex++;
+        }
+
+        function removeVariant(index) {
+            document.getElementById(`variant-${index}`).remove();
+        }
+    </script>
+@endsection
