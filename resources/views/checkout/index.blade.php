@@ -1240,8 +1240,66 @@
                         return false;
                     }
 
-                    // Show the payment slip modal
-                    openSlipModal();
+                    // Check payment method
+                    const paymentMethod = document.querySelector('input[name="payment_method"]:checked').value;
+
+                    if (paymentMethod === 'invoice') {
+                        // Validate invoice email
+                        const invoiceEmail = document.getElementById('invoice_email').value;
+                        if (!invoiceEmail) {
+                            alert('Please enter your email to receive the invoice');
+                            return false;
+                        }
+
+                        // Submit directly for invoice (no slip needed)
+                        const formData = new FormData(document.getElementById('checkoutForm'));
+
+                        fetch('{{ route("checkout.process") }}', {
+                            method: 'POST',
+                            body: formData,
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest',
+                                'Accept': 'application/json'
+                            }
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'Order Placed!',
+                                        html: `
+                                            <div style="text-align: center;">
+                                                <p style="font-size: 1.1rem; margin-bottom: 1rem;">Thank you for your order!</p>
+                                                <p style="margin-bottom: 1rem; color: #666;">We will send an invoice to your email shortly.</p>
+                                                <p style="background: #f0f0f0; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                                                    <strong style="color: #E60914;"><i class="fas fa-file-invoice"></i> Invoice Email:</strong><br>
+                                                    <span style="font-size: 1.2rem; font-weight: bold; color: #333;">${invoiceEmail}</span>
+                                                </p>
+                                                <p style="color: #888; font-size: 0.9rem;">Please check your email for the invoice and payment instructions.</p>
+                                            </div>
+                                        `,
+                                        confirmButtonColor: '#E60914',
+                                        confirmButtonText: 'OK'
+                                    }).then(() => {
+                                        window.location.href = '{{ route("products.index") }}';
+                                    });
+                                } else {
+                                    throw new Error(data.message || 'Order creation failed');
+                                }
+                            })
+                            .catch(error => {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Oops!',
+                                    text: error.message || 'An error occurred. Please try again.',
+                                    confirmButtonColor: '#E60914'
+                                });
+                            });
+                    } else {
+                        // Show the payment slip modal for direct transfer
+                        openSlipModal();
+                    }
                 });
             }
         });
@@ -1340,16 +1398,16 @@
                             icon: 'success',
                             title: 'Order Confirmed!',
                             html: `
-                                                    <div style="text-align: center;">
-                                                        <p style="font-size: 1.1rem; margin-bottom: 1rem;">Thank you for your order!</p>
-                                                        <p style="margin-bottom: 1rem; color: #666;">We will contact you at your email once payment is verified.</p>
-                                                        <p style="background: #f0f0f0; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
-                                                            <strong style="color: #E60914;"><i class="fas fa-envelope"></i> E-mail:</strong><br>
-                                                            <span style="font-size: 1.2rem; font-weight: bold; color: #333;">${data.customer_email}</span>
-                                                        </p>
-                                                        <p style="color: #888; font-size: 0.9rem;">Please check your email for order confirmation and shipping updates.</p>
-                                                    </div>
-                                                `,
+                                                        <div style="text-align: center;">
+                                                            <p style="font-size: 1.1rem; margin-bottom: 1rem;">Thank you for your order!</p>
+                                                            <p style="margin-bottom: 1rem; color: #666;">We will contact you at your email once payment is verified.</p>
+                                                            <p style="background: #f0f0f0; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                                                                <strong style="color: #E60914;"><i class="fas fa-envelope"></i> E-mail:</strong><br>
+                                                                <span style="font-size: 1.2rem; font-weight: bold; color: #333;">${data.customer_email}</span>
+                                                            </p>
+                                                            <p style="color: #888; font-size: 0.9rem;">Please check your email for order confirmation and shipping updates.</p>
+                                                        </div>
+                                                    `,
                             confirmButtonColor: '#E60914',
                             confirmButtonText: 'OK'
                         }).then(() => {
@@ -1381,12 +1439,12 @@
                     icon: 'error',
                     title: 'Please check your inputs',
                     html: `
-                                                                        <ul style="text-align: left;">
-                                                                            @foreach($errors->all() as $error)
-                                                                                <li>{{ $error }}</li>
-                                                                            @endforeach
-                                                                        </ul>
-                                                                    `,
+                                                                                <ul style="text-align: left;">
+                                                                                    @foreach($errors->all() as $error)
+                                                                                        <li>{{ $error }}</li>
+                                                                                    @endforeach
+                                                                                </ul>
+                                                                            `,
                     confirmButtonColor: '#E60914'
                 });
             });
