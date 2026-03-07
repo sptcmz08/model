@@ -480,6 +480,13 @@
                     </a>
                 </li>
                 <li>
+                    <a href="{{ route('admin.invoices.index') }}"
+                        class="{{ request()->routeIs('admin.invoices.*') ? 'active' : '' }}">
+                        <i class="fas fa-file-invoice"></i>
+                        <span>Invoices</span>
+                    </a>
+                </li>
+                <li>
                     <a href="{{ route('admin.banners.index') }}"
                         class="{{ request()->routeIs('admin.banners.*') ? 'active' : '' }}">
                         <i class="fas fa-cog"></i>

@@ -68,6 +68,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('categories', CategoryController::class);
         Route::resource('products', AdminProductController::class);
         Route::resource('banners', \App\Http\Controllers\Admin\BannerController::class);
+        Route::get('/invoices', [OrderController::class, 'invoices'])->name('invoices.index');
         Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
         Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
         Route::patch('/orders/{order}', [OrderController::class, 'update'])->name('orders.update');

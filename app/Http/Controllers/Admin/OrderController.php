@@ -41,6 +41,38 @@ class OrderController extends Controller
         return view('admin.orders.index', compact('orders'));
     }
 
+    public function invoices(Request $request): View
+    {
+        $query = Order::with('items')->where('payment_method', 'invoice')->latest();
+
+        // Filter by payment status
+        if ($request->filled('payment_status')) {
+            $query->where('payment_status', $request->payment_status);
+        }
+
+        // Search
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('order_number', 'like', "%{$search}%")
+                    ->orWhere('customer_name', 'like', "%{$search}%")
+                    ->orWhere('customer_email', 'like', "%{$search}%")
+                    ->orWhere('invoice_email', 'like', "%{$search}%");
+            });
+        }
+
+        $invoices = $query->paginate(20)->withQueryString();
+
+        // Stats
+        $stats = [
+            'total' => Order::where('payment_method', 'invoice')->count(),
+            'waiting' => Order::where('payment_method', 'invoice')->where('payment_status', 'waiting_invoice')->count(),
+            'paid' => Order::where('payment_method', 'invoice')->where('payment_status', 'completed')->count(),
+        ];
+
+        return view('admin.invoices.index', compact('invoices', 'stats'));
+    }
+
     public function show(Order $order): View
     {
         $order->load('items');
