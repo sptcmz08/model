@@ -173,4 +173,37 @@ class OrderController extends Controller
 
         return $pdf->stream("receipt-{$order->order_number}.pdf");
     }
+
+    public function invoiceShow(Order $order): View
+    {
+        $order->load('items');
+        return view('admin.invoices.show', compact('order'));
+    }
+
+    public function sendInvoice(Request $request, Order $order): RedirectResponse
+    {
+        $note = $request->input('invoice_note');
+
+        // Save note if provided
+        if ($note) {
+            $order->update(['admin_note' => $note]);
+        }
+
+        $targetEmail = $order->invoice_email ?? $order->customer_email;
+
+        try {
+            Mail::to($targetEmail)->send(new \App\Mail\InvoiceMail($order, $note));
+
+            // Update status from waiting_invoice to pending
+            if ($order->payment_status === 'waiting_invoice') {
+                $order->update(['payment_status' => 'pending']);
+            }
+
+            return redirect()->route('admin.invoices.show', $order)
+                ->with('success', 'Invoice sent to ' . $targetEmail . ' successfully!');
+        } catch (\Exception $e) {
+            return redirect()->route('admin.invoices.show', $order)
+                ->with('warning', 'Failed to send invoice email: ' . $e->getMessage());
+        }
+    }
 }

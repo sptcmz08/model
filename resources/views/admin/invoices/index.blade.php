@@ -97,10 +97,16 @@
                                 <td>{!! $invoice->payment_status_badge !!}</td>
                                 <td style="color: var(--text-muted); font-size: 0.85rem;">{{ $invoice->created_at->format('d/m/Y H:i') }}</td>
                                 <td>
-                                    <a href="{{ route('admin.orders.show', $invoice) }}" class="btn btn-sm"
-                                        style="background: var(--gold-primary); color: #000; font-size: 0.8rem; padding: 0.3rem 0.75rem;">
-                                        <i class="fas fa-eye"></i> View
-                                    </a>
+                                    <div style="display: flex; gap: 0.4rem;">
+                                        <a href="{{ route('admin.invoices.show', $invoice) }}" class="btn btn-sm"
+                                            style="background: #E60914; color: #fff; font-size: 0.8rem; padding: 0.3rem 0.75rem;">
+                                            <i class="fas fa-file-invoice"></i> Invoice
+                                        </a>
+                                        <a href="{{ route('admin.orders.show', $invoice) }}" class="btn btn-sm"
+                                            style="background: var(--gold-primary); color: #000; font-size: 0.8rem; padding: 0.3rem 0.75rem;">
+                                            <i class="fas fa-eye"></i> View
+                                        </a>
+                                    </div>
                                 </td>
                             </tr>
                         @endforeach
