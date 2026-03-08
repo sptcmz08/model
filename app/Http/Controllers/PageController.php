@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AboutImage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\View\View;
@@ -10,7 +11,8 @@ class PageController extends Controller
 {
     public function about(): View
     {
-        return view('about');
+        $aboutImages = AboutImage::where('is_active', true)->orderBy('order')->get();
+        return view('about', compact('aboutImages'));
     }
 
     public function contact(): View

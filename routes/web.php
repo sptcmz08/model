@@ -68,6 +68,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('categories', CategoryController::class);
         Route::resource('products', AdminProductController::class);
         Route::resource('banners', \App\Http\Controllers\Admin\BannerController::class);
+        Route::get('/about-images', [\App\Http\Controllers\Admin\AboutImageController::class, 'index'])->name('about-images.index');
+        Route::post('/about-images', [\App\Http\Controllers\Admin\AboutImageController::class, 'store'])->name('about-images.store');
+        Route::delete('/about-images/{about_image}', [\App\Http\Controllers\Admin\AboutImageController::class, 'destroy'])->name('about-images.destroy');
         Route::get('/invoices', [OrderController::class, 'invoices'])->name('invoices.index');
         Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
         Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');

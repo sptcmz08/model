@@ -487,6 +487,13 @@
                     </a>
                 </li>
                 <li>
+                    <a href="{{ route('admin.about-images.index') }}"
+                        class="{{ request()->routeIs('admin.about-images.*') ? 'active' : '' }}">
+                        <i class="fas fa-images"></i>
+                        <span>About Images</span>
+                    </a>
+                </li>
+                <li>
                     <a href="{{ route('admin.banners.index') }}"
                         class="{{ request()->routeIs('admin.banners.*') ? 'active' : '' }}">
                         <i class="fas fa-cog"></i>

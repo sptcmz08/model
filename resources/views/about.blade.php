@@ -16,9 +16,24 @@
         <div class="container">
             <div class="about-grid">
                 <div class="about-image">
-                    <div class="image-frame">
-                        <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600" alt="Workshop">
-                    </div>
+                    @if(isset($aboutImages) && $aboutImages->count() >= 2)
+                        <div class="dual-image-stack">
+                            <div class="stack-img stack-img-1">
+                                <img src="{{ $aboutImages[0]->image_url }}" alt="Our Work 1">
+                            </div>
+                            <div class="stack-img stack-img-2">
+                                <img src="{{ $aboutImages[1]->image_url }}" alt="Our Work 2">
+                            </div>
+                        </div>
+                    @elseif(isset($aboutImages) && $aboutImages->count() == 1)
+                        <div class="image-frame">
+                            <img src="{{ $aboutImages[0]->image_url }}" alt="Our Work">
+                        </div>
+                    @else
+                        <div class="image-frame">
+                            <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600" alt="Workshop">
+                        </div>
+                    @endif
                     <div class="experience-badge">
                         <span class="number">10+</span>
                         <span class="text">{{ __('Years Experience') }}</span>
@@ -30,20 +45,6 @@
                     <p>Welcome to <strong>tattooink12studio.com</strong>, your destination for custom-painted
                         collectible figures in scales 1/12 and 1/6. We specialize in hand-painted head sculpts,
                         part kits, art toys, and 3D printed collectibles.</p>
-                    <p>Every piece is meticulously hand-painted with attention to every detail by our skilled artist.
-                        We accept commissions — just PM us on Instagram
-                        <a href="https://www.instagram.com/tattoo.fett" target="_blank"
-                            style="color: var(--brand-red); font-weight: 700; text-decoration: none;">@tattoo.fett</a>
-                        to discuss your project.
-                    </p>
-                    <p>We ship worldwide via PayPal (Goods and Services) with secure packaging and full tracking.
-                        Follow our backup accounts
-                        <a href="https://www.instagram.com/custom_cry12" target="_blank"
-                            style="color: var(--brand-red); font-weight: 700; text-decoration: none;">@custom_cry12</a> and
-                        <a href="https://www.instagram.com/tattoo.collectibles" target="_blank"
-                            style="color: var(--brand-red); font-weight: 700; text-decoration: none;">@tattoo.collectibles</a>
-                        for more updates and exclusive content.
-                    </p>
 
                     <div class="about-stats">
                         <div class="stat">
@@ -114,6 +115,51 @@
             position: relative;
         }
 
+        /* Dual Overlapping Images */
+        .dual-image-stack {
+            position: relative;
+            width: 100%;
+            height: 520px;
+        }
+
+        .stack-img {
+            position: absolute;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 4px solid #fff;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+        }
+
+        .stack-img:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+        }
+
+        .stack-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .stack-img-1 {
+            top: 0;
+            left: 0;
+            width: 65%;
+            height: 340px;
+            z-index: 2;
+        }
+
+        .stack-img-2 {
+            bottom: 0;
+            right: 0;
+            width: 65%;
+            height: 340px;
+            z-index: 1;
+        }
+
+        /* Single Image Fallback */
         .image-frame {
             border-radius: 20px;
             overflow: hidden;
@@ -139,6 +185,7 @@
             align-items: center;
             justify-content: center;
             color: #fff;
+            z-index: 3;
         }
 
         .experience-badge .number {
@@ -200,6 +247,18 @@
                 gap: 3rem;
             }
 
+            .dual-image-stack {
+                height: 420px;
+            }
+
+            .stack-img-1 {
+                height: 280px;
+            }
+
+            .stack-img-2 {
+                height: 280px;
+            }
+
             .experience-badge {
                 right: 10px;
                 bottom: -20px;
@@ -220,6 +279,18 @@
         @media (max-width: 768px) {
             .page-hero-content h1 {
                 font-size: 2rem;
+            }
+
+            .dual-image-stack {
+                height: 350px;
+            }
+
+            .stack-img-1 {
+                height: 230px;
+            }
+
+            .stack-img-2 {
+                height: 230px;
             }
         }
     </style>
