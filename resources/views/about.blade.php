@@ -34,10 +34,7 @@
                             <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600" alt="Workshop">
                         </div>
                     @endif
-                    <div class="experience-badge">
-                        <span class="number">10+</span>
-                        <span class="text">{{ __('Years Experience') }}</span>
-                    </div>
+
                 </div>
                 <div class="about-content">
                     <h2>{{ __('Our Story') }}</h2>
@@ -46,20 +43,7 @@
                         collectible figures in scales 1/12 and 1/6. We specialize in hand-painted head sculpts,
                         part kits, art toys, and 3D printed collectibles.</p>
 
-                    <div class="about-stats">
-                        <div class="stat">
-                            <span class="stat-number">500+</span>
-                            <span class="stat-label">{{ __('Custom Models Created') }}</span>
-                        </div>
-                        <div class="stat">
-                            <span class="stat-number">50+</span>
-                            <span class="stat-label">{{ __('Countries Shipped') }}</span>
-                        </div>
-                        <div class="stat">
-                            <span class="stat-number">100%</span>
-                            <span class="stat-label">{{ __('Customer Satisfaction') }}</span>
-                        </div>
-                    </div>
+
                 </div>
             </div>
         </div>
@@ -172,33 +156,7 @@
             object-fit: cover;
         }
 
-        .experience-badge {
-            position: absolute;
-            bottom: -30px;
-            right: -30px;
-            width: 150px;
-            height: 150px;
-            background: var(--gradient-red);
-            border-radius: 50%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
-            z-index: 3;
-        }
 
-        .experience-badge .number {
-            font-family: 'Inter', sans-serif;
-            font-size: 2.5rem;
-            font-weight: 700;
-        }
-
-        .experience-badge .text {
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            color: #fff;
-        }
 
         .about-content h2 {
             font-family: 'Inter', sans-serif;
@@ -215,31 +173,7 @@
             line-height: 1.8;
         }
 
-        .about-stats {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1.5rem;
-            margin-top: 2.5rem;
-            padding-top: 2.5rem;
-            border-top: 1px solid var(--border-color);
-        }
 
-        .stat {
-            text-align: center;
-        }
-
-        .stat-number {
-            display: block;
-            font-family: 'Inter', sans-serif;
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: var(--brand-red);
-        }
-
-        .stat-label {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-        }
 
         @media (max-width: 992px) {
             .about-grid {
@@ -259,21 +193,7 @@
                 height: 280px;
             }
 
-            .experience-badge {
-                right: 10px;
-                bottom: -20px;
-                width: 120px;
-                height: 120px;
-            }
 
-            .experience-badge .number {
-                font-size: 2rem;
-            }
-
-            .about-stats {
-                grid-template-columns: 1fr;
-                gap: 1rem;
-            }
         }
 
         @media (max-width: 768px) {
