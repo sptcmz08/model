@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Mail\OrderConfirmationMail;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\ShippingRate;
 use App\Services\CartService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -23,14 +24,16 @@ class CheckoutController extends Controller
     {
         $items = $this->cartService->getItems();
         $subtotal = $this->cartService->getSubtotal();
-        $shippingTotal = $this->cartService->getShippingTotal();
-        $total = $this->cartService->getTotal();
+        $shippingRates = ShippingRate::getActiveRatesMap();
+        // Default shipping to 0 until continent is selected
+        $shippingTotal = 0;
+        $total = $subtotal;
 
         if (empty($items)) {
             return redirect()->route('cart.index')->with('error', 'Your cart is empty!');
         }
 
-        return view('checkout.index', compact('items', 'subtotal', 'shippingTotal', 'total'));
+        return view('checkout.index', compact('items', 'subtotal', 'shippingTotal', 'total', 'shippingRates'));
     }
 
     public function process(Request $request)
@@ -65,7 +68,9 @@ class CheckoutController extends Controller
 
         $items = $this->cartService->getItems();
         $subtotal = $this->cartService->getSubtotal();
-        $shippingCostUSD = $this->cartService->getShippingTotal();
+        // Look up shipping rate from continent
+        $continent = $validated['billing_continent'];
+        $shippingCostUSD = ShippingRate::getRateForContinent($continent);
 
         if (empty($items)) {
             return redirect()->route('cart.index')->with('error', 'Your cart is empty!');

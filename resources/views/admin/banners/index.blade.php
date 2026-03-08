@@ -100,6 +100,56 @@
         </div>
     @endif
 
+    <!-- Shipping Rates -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title"><i class="fas fa-shipping-fast"></i> Shipping Rates by Continent</h3>
+        </div>
+        <form action="{{ route('admin.shipping-rates.update') }}" method="POST">
+            @csrf
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Continent</th>
+                        <th width="180">Rate (USD)</th>
+                        <th width="100">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach(\App\Models\ShippingRate::orderBy('id')->get() as $rate)
+                        <tr>
+                            <td>
+                                <i class="fas fa-globe" style="color: var(--gold-primary); margin-right: 0.5rem;"></i>
+                                {{ $rate->label }}
+                                <input type="hidden" name="rates[{{ $rate->id }}][id]" value="{{ $rate->id }}">
+                            </td>
+                            <td>
+                                <div style="position: relative;">
+                                    <span
+                                        style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-muted);">$</span>
+                                    <input type="number" name="rates[{{ $rate->id }}][rate]" value="{{ $rate->rate }}"
+                                        step="0.01" min="0" class="form-control" style="padding-left: 28px; max-width: 160px;">
+                                </div>
+                            </td>
+                            <td>
+                                @if($rate->is_active)
+                                    <span class="badge bg-success">Active</span>
+                                @else
+                                    <span class="badge bg-secondary">Inactive</span>
+                                @endif
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+            <div style="margin-top: 1rem;">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Save Shipping Rates
+                </button>
+            </div>
+        </form>
+    </div>
+
     <!-- Store Info -->
     <div class="card">
         <div class="card-header">

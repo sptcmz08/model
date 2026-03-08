@@ -16,8 +16,8 @@
         <div class="container">
             <form action="{{ route('checkout.process') }}" method="POST" class="checkout-form" id="checkoutForm">
                 @csrf
-                <!-- Per-product shipping cost from backend -->
-                <input type="hidden" id="calculated_shipping_cost" name="shipping_cost" value="{{ $shippingTotal }}">
+                <!-- Shipping rates from DB (JSON for JS) -->
+                <input type="hidden" id="calculated_shipping_cost" name="shipping_cost" value="0">
 
                 <div class="checkout-grid">
                     <!-- Billing & Shipping Details -->
@@ -231,11 +231,11 @@
                                 </div>
                                 <div class="summary-row">
                                     <span>Shipping</span>
-                                    <span id="summary-shipping">${{ number_format($shippingTotal, 2) }}</span>
+                                    <span id="summary-shipping" style="font-style: italic; font-size: 0.85rem; color: var(--text-muted);">Select a continent</span>
                                 </div>
                                 <div class="summary-row total">
                                     <span>Total (USD)</span>
-                                    <span id="summary-total">${{ number_format($total, 2) }}</span>
+                                    <span id="summary-total">${{ number_format($subtotal, 2) }}</span>
                                 </div>
                             </div>
                         </div>
@@ -1106,15 +1106,8 @@
                 ]
             };
 
-            const shippingRatesTHB = {
-                'asia': 3000,
-                'europe': 3000,
-                'americas': 3000,
-                'oceania': 3000
-            };
-
-            // Exchange Rate: 1 USD = 34 THB (Approximation)
-            const EXCHANGE_RATE = 34;
+            // Shipping rates from DB (continent => USD rate)
+            const shippingRatesUSD = @json($shippingRates ?? []);
 
             // --- 2. Element References ---
             const shipToggle = document.getElementById('same_as_billing');
@@ -1158,10 +1151,33 @@
                 }
             }
 
-            // Calculate and Update Total (shipping comes from per-product costs)
+            // Calculate and Update Total based on selected continent
             function updateOrderSummary() {
-                // Shipping is pre-calculated from backend per-product costs
-                // No continent-based calculation needed
+                // Determine which continent to use for shipping
+                let continent = billingContinent.value;
+                if (!shipToggle.checked && shippingContinent.value) {
+                    continent = shippingContinent.value;
+                }
+
+                let shippingUSD = 0;
+                if (continent && shippingRatesUSD[continent] !== undefined) {
+                    shippingUSD = parseFloat(shippingRatesUSD[continent]);
+                }
+
+                const total = subtotal + shippingUSD;
+
+                // Update UI
+                if (continent && shippingRatesUSD[continent] !== undefined) {
+                    summaryShipping.textContent = '$' + shippingUSD.toFixed(2);
+                    summaryShipping.style.fontStyle = 'normal';
+                    summaryShipping.style.fontSize = '';
+                } else {
+                    summaryShipping.textContent = 'Select a continent';
+                    summaryShipping.style.fontStyle = 'italic';
+                    summaryShipping.style.fontSize = '0.85rem';
+                }
+                summaryTotal.textContent = '$' + total.toFixed(2);
+                hiddenShippingCost.value = shippingUSD.toFixed(2);
             }
 
             function toggleShipping() {
@@ -1269,16 +1285,16 @@
                                         icon: 'success',
                                         title: 'Order Placed!',
                                         html: `
-                                            <div style="text-align: center;">
-                                                <p style="font-size: 1.1rem; margin-bottom: 1rem;">Thank you for your order!</p>
-                                                <p style="margin-bottom: 1rem; color: #666;">We will send an invoice to your email shortly.</p>
-                                                <p style="background: #f0f0f0; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
-                                                    <strong style="color: #E60914;"><i class="fas fa-file-invoice"></i> Invoice Email:</strong><br>
-                                                    <span style="font-size: 1.2rem; font-weight: bold; color: #333;">${invoiceEmail}</span>
-                                                </p>
-                                                <p style="color: #888; font-size: 0.9rem;">Please check your email for the invoice and payment instructions.</p>
-                                            </div>
-                                        `,
+                                                <div style="text-align: center;">
+                                                    <p style="font-size: 1.1rem; margin-bottom: 1rem;">Thank you for your order!</p>
+                                                    <p style="margin-bottom: 1rem; color: #666;">We will send an invoice to your email shortly.</p>
+                                                    <p style="background: #f0f0f0; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                                                        <strong style="color: #E60914;"><i class="fas fa-file-invoice"></i> Invoice Email:</strong><br>
+                                                        <span style="font-size: 1.2rem; font-weight: bold; color: #333;">${invoiceEmail}</span>
+                                                    </p>
+                                                    <p style="color: #888; font-size: 0.9rem;">Please check your email for the invoice and payment instructions.</p>
+                                                </div>
+                                            `,
                                         confirmButtonColor: '#E60914',
                                         confirmButtonText: 'OK'
                                     }).then(() => {
@@ -1398,16 +1414,16 @@
                             icon: 'success',
                             title: 'Order Confirmed!',
                             html: `
-                                                        <div style="text-align: center;">
-                                                            <p style="font-size: 1.1rem; margin-bottom: 1rem;">Thank you for your order!</p>
-                                                            <p style="margin-bottom: 1rem; color: #666;">We will contact you at your email once payment is verified.</p>
-                                                            <p style="background: #f0f0f0; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
-                                                                <strong style="color: #E60914;"><i class="fas fa-envelope"></i> E-mail:</strong><br>
-                                                                <span style="font-size: 1.2rem; font-weight: bold; color: #333;">${data.customer_email}</span>
-                                                            </p>
-                                                            <p style="color: #888; font-size: 0.9rem;">Please check your email for order confirmation and shipping updates.</p>
-                                                        </div>
-                                                    `,
+                                                            <div style="text-align: center;">
+                                                                <p style="font-size: 1.1rem; margin-bottom: 1rem;">Thank you for your order!</p>
+                                                                <p style="margin-bottom: 1rem; color: #666;">We will contact you at your email once payment is verified.</p>
+                                                                <p style="background: #f0f0f0; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                                                                    <strong style="color: #E60914;"><i class="fas fa-envelope"></i> E-mail:</strong><br>
+                                                                    <span style="font-size: 1.2rem; font-weight: bold; color: #333;">${data.customer_email}</span>
+                                                                </p>
+                                                                <p style="color: #888; font-size: 0.9rem;">Please check your email for order confirmation and shipping updates.</p>
+                                                            </div>
+                                                        `,
                             confirmButtonColor: '#E60914',
                             confirmButtonText: 'OK'
                         }).then(() => {
@@ -1439,12 +1455,12 @@
                     icon: 'error',
                     title: 'Please check your inputs',
                     html: `
-                                                                                <ul style="text-align: left;">
-                                                                                    @foreach($errors->all() as $error)
-                                                                                        <li>{{ $error }}</li>
-                                                                                    @endforeach
-                                                                                </ul>
-                                                                            `,
+                                                                                        <ul style="text-align: left;">
+                                                                                            @foreach($errors->all() as $error)
+                                                                                                <li>{{ $error }}</li>
+                                                                                            @endforeach
+                                                                                        </ul>
+                                                                                    `,
                     confirmButtonColor: '#E60914'
                 });
             });

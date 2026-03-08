@@ -65,12 +65,13 @@
                         </div>
                         <div class="summary-row">
                             <span>Shipping</span>
-                            <span style="color: var(--text-secondary);">${{ number_format($shippingTotal, 2) }}</span>
+                            <span style="color: var(--text-muted); font-size: 0.85rem; font-style: italic;">Calculated at
+                                checkout</span>
                         </div>
                         <div class="summary-divider"></div>
                         <div class="summary-row total">
-                            <span>Total</span>
-                            <span id="cart-total">${{ number_format($total, 2) }}</span>
+                            <span>Subtotal</span>
+                            <span id="cart-total">${{ number_format($subtotal, 2) }}</span>
                         </div>
 
                         <a href="{{ route('checkout.index') }}" class="btn btn-primary checkout-btn">

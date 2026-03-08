@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Banner;
+use App\Models\ShippingRate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -90,5 +91,18 @@ class BannerController extends Controller
         $banner->delete();
 
         return redirect()->route('admin.banners.index')->with('success', 'Banner deleted successfully.');
+    }
+
+    public function updateShippingRates(Request $request)
+    {
+        $rates = $request->input('rates', []);
+
+        foreach ($rates as $data) {
+            ShippingRate::where('id', $data['id'])->update([
+                'rate' => max(0, (float) $data['rate']),
+            ]);
+        }
+
+        return redirect()->route('admin.banners.index')->with('success', 'Shipping rates updated successfully.');
     }
 }
