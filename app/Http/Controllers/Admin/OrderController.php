@@ -141,8 +141,15 @@ class OrderController extends Controller
             'status' => 'processing',
         ]);
 
+        // Send payment confirmed email to customer
+        try {
+            Mail::to($order->customer_email)->send(new \App\Mail\PaymentConfirmedMail($order));
+        } catch (\Exception $e) {
+            \Log::error('Failed to send payment confirmed email: ' . $e->getMessage());
+        }
+
         return redirect()->route('admin.orders.show', $order)
-            ->with('success', 'Payment confirmed and stock reduced successfully!');
+            ->with('success', 'Payment confirmed, stock reduced, and confirmation email sent!');
     }
 
     public function sendNote(Request $request, Order $order): RedirectResponse

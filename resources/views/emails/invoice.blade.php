@@ -54,6 +54,10 @@ Please transfer the total amount of **${{ number_format($order->total, 2) }}** t
 
 After payment, please reply to this email with your payment receipt/screenshot so we can process your order promptly.
 
+@component('mail::button', ['url' => url('/checkout/confirm-payment/' . $order->order_number), 'color' => 'success'])
+Confirm Payment & Upload Receipt
+@endcomponent
+
 @if($invoiceNote)
     ---
 

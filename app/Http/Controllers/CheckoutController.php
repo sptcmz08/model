@@ -239,6 +239,13 @@ class CheckoutController extends Controller
                 'payment_status' => 'awaiting_verification',
             ]);
 
+            // Send payment received confirmation email
+            try {
+                Mail::to($order->customer_email)->send(new \App\Mail\PaymentReceivedMail($order));
+            } catch (\Exception $e) {
+                \Log::error('Failed to send payment received email: ' . $e->getMessage());
+            }
+
             return redirect()->route('checkout.success-manual', ['order_number' => $order->order_number]);
         }
 
