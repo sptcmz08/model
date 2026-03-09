@@ -573,18 +573,18 @@
                     <li style="color: #aaa; line-height: 1.6;">
                         <i class="fas fa-map-marker-alt"
                             style="width: 20px; color: var(--brand-red); vertical-align: top;"></i>
-                        Phanupong Pukcharoen<br>
-                        <span style="margin-left: 20px;">Sket Town Tiwanon Rangsit</span><br>
-                        <span style="margin-left: 20px;">189/76 Moo 4, Ban Klang Subdistrict</span><br>
-                        <span style="margin-left: 20px;">Mueang Pathum Thani District</span><br>
-                        <span style="margin-left: 20px;">Pathum Thani Province 12000</span><br>
+                        Nattawut Kongyod<br>
+                        <span style="margin-left: 20px;">410 Village No. 9, Han Pho Subdistrict</span><br>
+                        <span style="margin-left: 20px;">Khao Chaison District</span><br>
+                        <span style="margin-left: 20px;">Phatthalung 93130</span><br>
                         <span style="margin-left: 20px;">Thailand</span>
                     </li>
                     <li style="color: #aaa; margin-top: 0.8rem;"><i class="fas fa-envelope"
-                            style="width: 20px; color: var(--brand-red);"></i> <a href="mailto:nattawut4085@gmail.com"
-                            style="color: #aaa;">nattawut4085@gmail.com</a></li>
+                            style="width: 20px; color: var(--brand-red);"></i> <a
+                            href="mailto:nattawutkongyod@hotmail.com"
+                            style="color: #aaa;">nattawutkongyod@hotmail.com</a></li>
                     <li style="color: #aaa;"><i class="fas fa-phone" style="width: 20px; color: var(--brand-red);"></i>
-                        065-445-0919 (Film)</li>
+                        093-735-4085</li>
                 </ul>
             </div>
         </div>

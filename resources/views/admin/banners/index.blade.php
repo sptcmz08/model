@@ -162,7 +162,7 @@
             </div>
             <div>
                 <p style="color: var(--text-muted); font-size: 0.85rem;">Contact Email</p>
-                <p style="font-weight: 600;">nattawut4085@gmail.com</p>
+                <p style="font-weight: 600;">nattawutkongyod@hotmail.com</p>
             </div>
             <div>
                 <p style="color: var(--text-muted); font-size: 0.85rem;">PayPal Email</p>

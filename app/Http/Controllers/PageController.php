@@ -29,10 +29,10 @@ class PageController extends Controller
             'message' => 'required|string',
         ]);
 
-        // Send email to nattawut4085@gmail.com
+        // Send email to nattawutkongyod@hotmail.com
         try {
             Mail::send([], [], function ($mail) use ($validated) {
-                $mail->to('nattawut4085@gmail.com')
+                $mail->to('nattawutkongyod@hotmail.com')
                     ->from($validated['email'], $validated['name'])
                     ->replyTo($validated['email'], $validated['name'])
                     ->subject('[tattooink12studio.com] Message from Contact: ' . $validated['subject'])
