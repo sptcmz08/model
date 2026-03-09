@@ -544,6 +544,14 @@
                             <span class="ig-label">YouTube</span>
                         </div>
                     </a>
+                    <a href="https://www.tiktok.com/@tattoo.fett" target="_blank" class="ig-card">
+                        <div class="ig-icon-wrap" style="background: linear-gradient(135deg, #010101, #69C9D0);"><i
+                                class="fab fa-tiktok"></i></div>
+                        <div class="ig-info">
+                            <span class="ig-handle">@tattoo.fett</span>
+                            <span class="ig-label">TikTok</span>
+                        </div>
+                    </a>
                 </div>
             </div>
             <div class="footer-links">
@@ -641,7 +649,7 @@
                     spans[2].style.transform = 'none';
                 }
             });
-        }
+    }
     </script>
 
     <!-- Cookie Consent Banner -->
