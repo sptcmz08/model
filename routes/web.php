@@ -82,6 +82,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('/orders/{order}/cancel', [OrderController::class, 'cancelOrder'])->name('orders.cancel');
         Route::post('/orders/{order}/send-note', [OrderController::class, 'sendNote'])->name('orders.send-note');
         Route::get('/orders/{order}/receipt', [OrderController::class, 'printReceipt'])->name('orders.receipt');
+        Route::delete('/orders/{order}', [OrderController::class, 'destroy'])->name('orders.destroy');
         // Admin Settings
         Route::get('/settings', [AdminAuthController::class, 'showSettings'])->name('settings');
         Route::post('/settings/password', [AdminAuthController::class, 'updatePassword'])->name('settings.password');

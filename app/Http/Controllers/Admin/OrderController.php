@@ -236,4 +236,13 @@ class OrderController extends Controller
                 ->with('warning', 'Failed to send invoice email: ' . $e->getMessage());
         }
     }
+
+    public function destroy(Order $order): RedirectResponse
+    {
+        $orderNumber = $order->order_number;
+        $order->delete();
+
+        return redirect()->route('admin.orders.index')
+            ->with('success', "Order #{$orderNumber} has been deleted.");
+    }
 }

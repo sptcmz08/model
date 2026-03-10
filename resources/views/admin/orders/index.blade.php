@@ -57,10 +57,17 @@
                                 @endif
                             </td>
                             <td>{{ $order->created_at->format('d/m/Y H:i') }}</td>
-                            <td>
+                            <td style="white-space: nowrap;">
                                 <a href="{{ route('admin.orders.show', $order) }}" class="btn btn-sm btn-view">
                                     <i class="fas fa-eye"></i> View
                                 </a>
+                                <button class="btn btn-sm btn-danger" onclick="deleteOrder({{ $order->id }}, '{{ $order->order_number }}')" style="margin-left:4px;">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                                <form id="delete-form-{{ $order->id }}" action="{{ route('admin.orders.destroy', $order) }}" method="POST" style="display:none;">
+                                    @csrf
+                                    @method('DELETE')
+                                </form>
                             </td>
                         </tr>
                     @endforeach
@@ -94,6 +101,12 @@
                 url.searchParams.delete('method');
             }
             window.location.href = url.toString();
+        }
+
+        function deleteOrder(orderId, orderNumber) {
+            if (confirm('Delete order #' + orderNumber + '? This cannot be undone.')) {
+                document.getElementById('delete-form-' + orderId).submit();
+            }
         }
     </script>
 @endsection
