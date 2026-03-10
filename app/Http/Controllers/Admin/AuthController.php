@@ -42,4 +42,29 @@ class AuthController extends Controller
 
         return redirect()->route('admin.login');
     }
+
+    public function showSettings(): View
+    {
+        return view('admin.settings');
+    }
+
+    public function updatePassword(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'current_password' => 'required|string',
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+
+        $admin = Auth::guard('admin')->user();
+
+        if (!Hash::check($validated['current_password'], $admin->password)) {
+            return back()->withErrors(['current_password' => 'Current password is incorrect.']);
+        }
+
+        $admin->update([
+            'password' => $validated['password'],
+        ]);
+
+        return redirect()->route('admin.settings')->with('success', 'Password updated successfully!');
+    }
 }

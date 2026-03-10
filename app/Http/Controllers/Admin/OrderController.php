@@ -171,6 +171,29 @@ class OrderController extends Controller
         }
     }
 
+    public function cancelOrder(Request $request, Order $order): RedirectResponse
+    {
+        $validated = $request->validate([
+            'cancel_reason' => 'required|string|max:1000',
+        ]);
+
+        $order->update([
+            'status' => 'cancelled',
+            'payment_status' => 'failed',
+            'admin_note' => 'CANCELLED: ' . $validated['cancel_reason'],
+        ]);
+
+        // Send cancellation email to customer
+        try {
+            Mail::to($order->customer_email)->send(new \App\Mail\OrderCancelledMail($order, $validated['cancel_reason']));
+            return redirect()->route('admin.orders.show', $order)
+                ->with('success', 'Order cancelled and notification email sent to customer!');
+        } catch (\Exception $e) {
+            return redirect()->route('admin.orders.show', $order)
+                ->with('warning', 'Order cancelled but failed to send email: ' . $e->getMessage());
+        }
+    }
+
     public function printReceipt(Order $order)
     {
         $order->load('items');

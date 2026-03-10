@@ -504,6 +504,16 @@
             <div class="sidebar-divider"></div>
             <ul class="sidebar-menu">
                 <li>
+                    <a href="{{ route('admin.settings') }}"
+                        class="{{ request()->routeIs('admin.settings') ? 'active' : '' }}">
+                        <i class="fas fa-user-cog"></i>
+                        <span>Account Settings</span>
+                    </a>
+                </li>
+            </ul>
+            <div class="sidebar-divider"></div>
+            <ul class="sidebar-menu">
+                <li>
                     <a href="{{ route('home') }}" target="_blank">
                         <i class="fas fa-external-link-alt"></i>
                         <span>View Site</span>

@@ -79,8 +79,12 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
         Route::patch('/orders/{order}', [OrderController::class, 'update'])->name('orders.update');
         Route::post('/orders/{order}/confirm-payment', [OrderController::class, 'confirmPayment'])->name('orders.confirm-payment');
+        Route::post('/orders/{order}/cancel', [OrderController::class, 'cancelOrder'])->name('orders.cancel');
         Route::post('/orders/{order}/send-note', [OrderController::class, 'sendNote'])->name('orders.send-note');
         Route::get('/orders/{order}/receipt', [OrderController::class, 'printReceipt'])->name('orders.receipt');
+        // Admin Settings
+        Route::get('/settings', [AdminAuthController::class, 'showSettings'])->name('settings');
+        Route::post('/settings/password', [AdminAuthController::class, 'updatePassword'])->name('settings.password');
     });
 });
 

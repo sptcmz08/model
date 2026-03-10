@@ -229,6 +229,30 @@
                 @endif
             </div>
 
+            @if(!in_array($order->status, ['cancelled', 'completed']))
+            <div class="card">
+                <h4 style="color: #ef4444; margin-bottom: 1rem;"><i class="fas fa-ban"></i> Cancel Order</h4>
+                <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1rem;">Cancel this order and notify the customer via email with a reason.</p>
+                <button type="button" onclick="cancelOrder()" class="btn" style="width: 100%; background: linear-gradient(135deg, #ef4444, #dc2626); color: #fff; padding: 0.8rem; font-weight: 600;">
+                    <i class="fas fa-times-circle"></i> Cancel Order
+                </button>
+                <form id="cancelOrderForm" action="{{ route('admin.orders.cancel', $order) }}" method="POST" style="display: none;">
+                    @csrf
+                    <input type="hidden" name="cancel_reason" id="cancel_reason_input">
+                </form>
+            </div>
+            @elseif($order->status === 'cancelled')
+            <div class="card">
+                <div style="background: rgba(239, 68, 68, 0.15); border: 1px solid #ef4444; padding: 1.25rem; border-radius: 8px; text-align: center;">
+                    <i class="fas fa-ban" style="color: #ef4444; font-size: 1.5rem;"></i>
+                    <p style="color: #ef4444; font-weight: 600; margin-top: 0.5rem;">Order Cancelled</p>
+                    @if($order->admin_note)
+                        <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 0.5rem;">{{ $order->admin_note }}</p>
+                    @endif
+                </div>
+            </div>
+            @endif
+
             <div class="card">
                 <h4 style="color: var(--gold-primary); margin-bottom: 1rem;">Timeline</h4>
                 <div style="color: var(--text-secondary); font-size: 0.9rem;">
@@ -240,4 +264,40 @@
             </div>
         </div>
     </div>
+
+    <script>
+        function cancelOrder() {
+            Swal.fire({
+                title: 'Cancel Order',
+                html: `
+                    <p style="margin-bottom: 1rem; color: #666;">Are you sure you want to cancel order <strong>#{{ $order->order_number }}</strong>?</p>
+                    <p style="margin-bottom: 0.5rem; color: #888; font-size: 0.9rem;">Please enter the reason for cancellation:</p>
+                `,
+                input: 'textarea',
+                inputPlaceholder: 'e.g. Out of stock, Customer requested cancellation...',
+                inputAttributes: {
+                    'aria-label': 'Cancellation reason',
+                    style: 'font-size: 0.95rem;'
+                },
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                cancelButtonColor: '#6b7280',
+                confirmButtonText: '<i class="fas fa-ban"></i> Yes, Cancel Order',
+                cancelButtonText: 'Go Back',
+                inputValidator: (value) => {
+                    if (!value) {
+                        return 'Please enter a reason for cancellation';
+                    }
+                },
+                customClass: {
+                    popup: 'swal-wide'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('cancel_reason_input').value = result.value;
+                    document.getElementById('cancelOrderForm').submit();
+                }
+            });
+        }
+    </script>
 @endsection
