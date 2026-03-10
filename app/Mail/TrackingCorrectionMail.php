@@ -32,7 +32,7 @@ class TrackingCorrectionMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            markdown: 'emails.tracking-correction',
+            view: 'emails.tracking-correction',
             with: [
                 'order' => $this->order,
                 'oldTracking' => $this->oldTracking,

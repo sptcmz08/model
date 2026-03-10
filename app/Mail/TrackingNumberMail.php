@@ -40,7 +40,7 @@ class TrackingNumberMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            markdown: 'emails.tracking-number',
+            view: 'emails.tracking-number',
             with: [
                 'order' => $this->order,
             ],

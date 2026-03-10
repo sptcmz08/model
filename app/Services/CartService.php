@@ -126,7 +126,9 @@ class CartService
 
     public function getTotal(): float
     {
-        return $this->getSubtotal() + $this->getShippingTotal();
+        // Shipping is calculated at checkout via region-based ShippingRate,
+        // so cart total should only reflect subtotal (product prices).
+        return $this->getSubtotal();
     }
 
     public function getItemCount(): int

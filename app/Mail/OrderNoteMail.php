@@ -32,7 +32,7 @@ class OrderNoteMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            markdown: 'emails.order-note',
+            view: 'emails.order-note',
             with: [
                 'order' => $this->order,
                 'note' => $this->note,

@@ -1,46 +1,94 @@
-@component('mail::message')
-# ✅ Payment Confirmed!
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="margin:0; padding:0; background-color:#f4f4f4; font-family: Arial, Helvetica, sans-serif;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f4f4f4; padding: 30px 0;">
+        <tr>
+            <td align="center">
+                <table width="600" cellpadding="0" cellspacing="0" style="background-color:#ffffff; border-radius:4px; overflow:hidden;">
 
-Dear **{{ $order->customer_name }}**,
+                    <!-- Logo -->
+                    <tr>
+                        <td align="center" style="padding: 30px 40px 20px;">
+                            <img src="https://tattooink12studio.com/images/logo_new.jpg" alt="tattooink12studio.com" style="max-height:60px; width:auto;">
+                            <div style="font-size:14px; color:#999; margin-top:6px;">tattooink12studio.com</div>
+                        </td>
+                    </tr>
 
-Great news! Your payment for **Order #{{ $order->order_number }}** has been verified and confirmed.
+                    <!-- Greeting -->
+                    <tr>
+                        <td align="center" style="padding: 10px 40px;">
+                            <div style="font-size:16px; color:#333;">Hello <strong>{{ $order->customer_name }}</strong>,</div>
+                            <div style="font-size:14px; color:#777; margin-top:4px;">your payment has been confirmed.</div>
+                        </td>
+                    </tr>
 
-@component('mail::panel')
-**Order Number:** {{ $order->order_number }}
+                    <!-- Title -->
+                    <tr>
+                        <td align="center" style="padding: 20px 40px 30px;">
+                            <div style="font-size:28px; font-weight:bold; color:#111;">Payment Confirmed</div>
+                            <div style="font-size:16px; color:#555; margin-top:6px;">#{{ $order->order_number }}</div>
+                        </td>
+                    </tr>
 
-**Amount Paid:** ${{ number_format($order->total, 2) }}
+                    <!-- Divider -->
+                    <tr><td style="padding:0 40px;"><div style="border-top:1px solid #eee;"></div></td></tr>
 
-**Status:** Payment Confirmed ✅
-@endcomponent
+                    <!-- Items -->
+                    <tr>
+                        <td style="padding: 20px 40px;">
+                            <table width="100%" cellpadding="0" cellspacing="0" style="border-bottom:1px solid #eee;">
+                                <tr style="background-color:#fafafa;">
+                                    <td style="padding:8px 10px; font-size:12px; font-weight:bold; color:#666;">Product</td>
+                                    <td align="center" style="padding:8px 10px; font-size:12px; font-weight:bold; color:#666;">Qty</td>
+                                    <td align="right" style="padding:8px 10px; font-size:12px; font-weight:bold; color:#666;">Price</td>
+                                </tr>
+                                @foreach($order->items as $item)
+                                <tr>
+                                    <td style="padding:10px; font-size:14px; color:#333; border-top:1px solid #f0f0f0;">{{ $item->product_name }}</td>
+                                    <td align="center" style="padding:10px; font-size:14px; color:#333; border-top:1px solid #f0f0f0;">{{ $item->quantity }}</td>
+                                    <td align="right" style="padding:10px; font-size:14px; color:#333; border-top:1px solid #f0f0f0;">${{ number_format($item->total, 2) }}</td>
+                                </tr>
+                                @endforeach
+                            </table>
+                        </td>
+                    </tr>
 
-## Order Summary
+                    <!-- Total -->
+                    <tr>
+                        <td style="padding: 0 40px 20px;">
+                            <table width="100%" cellpadding="0" cellspacing="0">
+                                <tr>
+                                    <td style="padding:10px; font-size:16px; font-weight:bold; color:#333;">Total</td>
+                                    <td align="right" style="padding:10px; font-size:16px; font-weight:bold; color:#333;">${{ number_format($order->total, 2) }}</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
 
-@component('mail::table')
-| Product | Qty | Price |
-|:--------|:---:|------:|
-@foreach($order->items as $item)
-    | {{ $item->product_name }} | {{ $item->quantity }} | ${{ number_format($item->total, 2) }} |
-@endforeach
-| | | |
-| **Subtotal** | | ${{ number_format($order->subtotal, 2) }} |
-| **Shipping** | | ${{ number_format($order->shipping_cost, 2) }} |
-| **Total** | | **${{ number_format($order->total, 2) }}** |
-@endcomponent
+                    <!-- Divider -->
+                    <tr><td style="padding:0 40px;"><div style="border-top:1px solid #eee;"></div></td></tr>
 
-## What's Next?
+                    <!-- Footer Message -->
+                    <tr>
+                        <td align="center" style="padding: 25px 40px;">
+                            <div style="font-size:13px; color:#999;">Your order is being prepared for shipping. We will send you the tracking number once shipped.</div>
+                        </td>
+                    </tr>
 
-1. ✅ Payment confirmed
-2. 📦 **Your order is being prepared for shipping** ← You are here
-3. 🚚 You will receive tracking information via email
+                    <!-- Bottom -->
+                    <tr>
+                        <td align="center" style="padding: 15px 40px 25px; background-color:#fafafa; border-top:1px solid #eee;">
+                            <div style="font-size:12px; color:#aaa;">&copy; {{ date('Y') }} tattooink12studio.com. All rights reserved.</div>
+                        </td>
+                    </tr>
 
-We will send you another email with your tracking number once your order has been shipped.
-
-Thank you for shopping with us! 🙏
-
-Best regards,
-**tattooink12studio.com**
-
-@component('mail::subcopy')
-You received this email because your payment was confirmed for your order at tattooink12studio.com.
-@endcomponent
-@endcomponent
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

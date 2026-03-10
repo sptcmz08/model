@@ -30,7 +30,7 @@ class PaymentReceivedMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            markdown: 'emails.payment-received',
+            view: 'emails.payment-received',
             with: [
                 'order' => $this->order,
             ],

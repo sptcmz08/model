@@ -461,7 +461,7 @@
                         @php
                             $cartService = app(\App\Services\CartService::class);
                             $cartCount = $cartService->getItemCount();
-                            $cartTotal = $cartService->getTotal();
+                            $cartTotal = $cartService->getSubtotal();
                         @endphp
                         @if($cartCount > 0)
                             <span class="cart-count">{{ $cartCount }}</span>

@@ -32,7 +32,7 @@ class InvoiceMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            markdown: 'emails.invoice',
+            view: 'emails.invoice',
             with: [
                 'order' => $this->order,
                 'invoiceNote' => $this->invoiceNote,

@@ -1,35 +1,60 @@
-@component('mail::message')
-# 📩 Payment Receipt Received
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="margin:0; padding:0; background-color:#f4f4f4; font-family: Arial, Helvetica, sans-serif;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f4f4f4; padding: 30px 0;">
+        <tr>
+            <td align="center">
+                <table width="600" cellpadding="0" cellspacing="0" style="background-color:#ffffff; border-radius:4px; overflow:hidden;">
 
-Dear **{{ $order->customer_name }}**,
+                    <!-- Logo -->
+                    <tr>
+                        <td align="center" style="padding: 30px 40px 20px;">
+                            <img src="https://tattooink12studio.com/images/logo_new.jpg" alt="tattooink12studio.com" style="max-height:60px; width:auto;">
+                            <div style="font-size:14px; color:#999; margin-top:6px;">tattooink12studio.com</div>
+                        </td>
+                    </tr>
 
-We have received your payment receipt for **Order #{{ $order->order_number }}**.
+                    <!-- Content -->
+                    <tr>
+                        <td align="center" style="padding: 10px 40px;">
+                            <div style="font-size:16px; color:#333;">Hello <strong>{{ $order->customer_name }}</strong>,</div>
+                            <div style="font-size:14px; color:#777; margin-top:4px;">we received your payment receipt.</div>
+                        </td>
+                    </tr>
 
-@component('mail::panel')
-**Order Number:** {{ $order->order_number }}
+                    <!-- Title -->
+                    <tr>
+                        <td align="center" style="padding: 20px 40px 30px;">
+                            <div style="font-size:28px; font-weight:bold; color:#111;">Payment Received</div>
+                            <div style="font-size:16px; color:#555; margin-top:6px;">#{{ $order->order_number }}</div>
+                            <div style="font-size:14px; color:#999; margin-top:6px;">Amount: ${{ number_format($order->total, 2) }}</div>
+                        </td>
+                    </tr>
 
-**Amount:** ${{ number_format($order->total, 2) }}
+                    <!-- Divider -->
+                    <tr><td style="padding:0 40px;"><div style="border-top:1px solid #eee;"></div></td></tr>
 
-**Status:** Awaiting Verification
-@endcomponent
+                    <!-- Footer Message -->
+                    <tr>
+                        <td align="center" style="padding: 25px 40px;">
+                            <div style="font-size:14px; color:#555;">Our team is reviewing your payment. We will confirm it shortly and notify you via email.</div>
+                        </td>
+                    </tr>
 
-Our team is now reviewing your payment. We will confirm it shortly and notify you via email once your payment has been
-verified.
+                    <!-- Bottom -->
+                    <tr>
+                        <td align="center" style="padding: 15px 40px 25px; background-color:#fafafa; border-top:1px solid #eee;">
+                            <div style="font-size:12px; color:#aaa;">&copy; {{ date('Y') }} tattooink12studio.com. All rights reserved.</div>
+                        </td>
+                    </tr>
 
-## What's Next?
-
-1. ✅ Payment receipt received
-2. 🔍 **We are verifying your payment** ← You are here
-3. 📦 Order will be processed and shipped
-
-If you have any questions, please don't hesitate to contact us.
-
-Thank you for your patience! 🙏
-
-Best regards,
-**tattooink12studio.com**
-
-@component('mail::subcopy')
-You received this email because you submitted a payment receipt for your order at tattooink12studio.com.
-@endcomponent
-@endcomponent
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
