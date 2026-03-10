@@ -13,7 +13,7 @@
                     <!-- Logo -->
                     <tr>
                         <td align="center" style="padding: 30px 40px 20px;">
-                            <img src="https://tattooink12studio.com/images/logo_new.jpg" alt="tattooink12studio.com" style="max-height:60px; width:auto;">
+                            <img src="https://tattooink12studio.com/images/logo_new.png" alt="tattooink12studio.com" style="max-height:60px; width:auto;">
                             <div style="font-size:14px; color:#999; margin-top:6px;">tattooink12studio.com</div>
                         </td>
                     </tr>

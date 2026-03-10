@@ -416,7 +416,7 @@
                 @php
                     $siteLogo = \App\Models\Banner::where('is_active', true)->orderBy('order')->first();
                 @endphp
-                <img src="{{ $siteLogo ? $siteLogo->image_url : asset('images/logo_new.jpg') }}"
+                <img src="{{ $siteLogo ? $siteLogo->image_url : asset('images/logo_new.png') }}"
                     alt="tattooink12studio.com" class="logo-image-img">
                 <div class="logo-text">
                     <span class="logo-title">TATTOOINK12STUDIO</span>
