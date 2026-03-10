@@ -33,7 +33,7 @@ class PageController extends Controller
         try {
             Mail::send([], [], function ($mail) use ($validated) {
                 $mail->to('nattawutkongyod@hotmail.com')
-                    ->from($validated['email'], $validated['name'])
+                    ->from(config('mail.from.address', 'noreply@tattooink12studio.com'), config('mail.from.name', 'tattooink12studio.com'))
                     ->replyTo($validated['email'], $validated['name'])
                     ->subject('[tattooink12studio.com] Message from Contact: ' . $validated['subject'])
                     ->text("Message from Contact Form\n\nName: {$validated['name']}\nEmail: {$validated['email']}\nSubject: {$validated['subject']}\n\nMessage:\n{$validated['message']}");

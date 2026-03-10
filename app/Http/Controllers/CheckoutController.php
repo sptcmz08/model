@@ -64,6 +64,9 @@ class CheckoutController extends Controller
             $rules['shipping_postcode'] = 'required|string|max:20';
         }
 
+        // Validate payment slip if uploaded
+        $rules['payment_slip'] = 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:5120';
+
         $validated = $request->validate($rules);
 
         $items = $this->cartService->getItems();
@@ -83,17 +86,17 @@ class CheckoutController extends Controller
             $customerName = $validated['billing_first_name'] . ' ' . $validated['billing_last_name'];
 
             if (!$request->has('same_as_billing')) {
-                // Using Shipping Address
+                // Using Shipping Address (use validated data)
                 $shippingAddress = $this->formatAddress(
-                    $request->shipping_first_name,
-                    $request->shipping_last_name,
-                    $request->shipping_company,
-                    $request->shipping_address_1,
-                    $request->shipping_address_2,
-                    $request->shipping_city,
-                    $request->shipping_state,
-                    $request->shipping_postcode,
-                    $request->shipping_country
+                    $validated['shipping_first_name'],
+                    $validated['shipping_last_name'],
+                    $request->shipping_company ?? '',
+                    $validated['shipping_address_1'],
+                    $request->shipping_address_2 ?? '',
+                    $validated['shipping_city'],
+                    $validated['shipping_state'],
+                    $validated['shipping_postcode'],
+                    $validated['shipping_country']
                 );
             } else {
                 // Using Billing Details as Shipping Address

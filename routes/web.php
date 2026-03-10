@@ -28,7 +28,7 @@ Route::get('lang/{locale}', function ($locale) {
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/about', [PageController::class, 'about'])->name('about');
 Route::get('/contact', [PageController::class, 'contact'])->name('contact');
-Route::post('/contact', [PageController::class, 'sendContact'])->name('contact.send');
+Route::post('/contact', [PageController::class, 'sendContact'])->name('contact.send')->middleware('throttle:5,1');
 
 // Products
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');
@@ -45,7 +45,7 @@ Route::prefix('cart')->group(function () {
 // Checkout
 Route::prefix('checkout')->group(function () {
     Route::get('/', [CheckoutController::class, 'index'])->name('checkout.index');
-    Route::post('/', [CheckoutController::class, 'process'])->name('checkout.process');
+    Route::post('/', [CheckoutController::class, 'process'])->name('checkout.process')->middleware('throttle:10,1');
     Route::get('/confirm-payment/{order_number}', [CheckoutController::class, 'confirmPayment'])->name('checkout.confirm-payment');
     Route::post('/submit-slip/{order_number}', [CheckoutController::class, 'submitPaymentSlip'])->name('checkout.submit-slip');
     Route::post('/request-invoice/{order_number}', [CheckoutController::class, 'requestInvoice'])->name('checkout.request-invoice');
@@ -90,15 +90,33 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
 // Serve files via /media prefix to bypass public/storage folder conflicts
 Route::get('media/{path}', function ($path) {
-    $filePath = storage_path('app/public/' . $path);
+    // Block path traversal attacks
+    if (str_contains($path, '..') || str_contains($path, '\\')) {
+        abort(403);
+    }
 
-    if (!file_exists($filePath)) {
+    $filePath = storage_path('app/public/' . $path);
+    $realPath = realpath($filePath);
+    $allowedBase = realpath(storage_path('app/public'));
+
+    // Verify the resolved path is within the allowed directory
+    if (!$realPath || !$allowedBase || !str_starts_with($realPath, $allowedBase)) {
+        abort(403);
+    }
+
+    if (!file_exists($realPath)) {
         abort(404);
     }
 
-    $mimeType = \Illuminate\Support\Facades\File::mimeType($filePath);
+    $mimeType = \Illuminate\Support\Facades\File::mimeType($realPath);
 
-    return response()->file($filePath, [
+    // Only allow safe file types
+    $allowedMimes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml', 'application/pdf'];
+    if (!in_array($mimeType, $allowedMimes)) {
+        abort(403);
+    }
+
+    return response()->file($realPath, [
         'Content-Type' => $mimeType,
         'Cache-Control' => 'public, max-age=31536000',
     ]);
