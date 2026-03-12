@@ -56,11 +56,8 @@
                 <p style="margin-bottom: 0.5rem;">
                     <strong>Name:</strong> {{ Auth::guard('admin')->user()->name }}
                 </p>
-                <p style="margin-bottom: 0.5rem;">
-                    <strong>Username:</strong> {{ Auth::guard('admin')->user()->username }}
-                </p>
                 <p>
-                    <strong>Email:</strong> {{ Auth::guard('admin')->user()->email ?? 'Not set' }}
+                    <strong>Username:</strong> {{ Auth::guard('admin')->user()->username }}
                 </p>
             </div>
         </div>
