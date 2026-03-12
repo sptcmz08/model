@@ -27,7 +27,7 @@ class ResetAdminUser extends Seeder
         Admin::create([
             'name' => 'Administrator',
             'username' => 'admin',
-            'email' => 'admin@filmcustom.com',
+            'email' => 'admin@tattooink12studio.com',
             'password' => Hash::make('password'),
         ]);
 
